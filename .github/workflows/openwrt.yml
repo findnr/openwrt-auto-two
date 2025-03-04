@@ -1,8 +1,7 @@
 name: v2openwrt
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: 30 22 * * *
+  push:
 jobs:
   job1:
     uses: ./.github/workflows/share.yml
@@ -20,4 +19,3 @@ jobs:
       LOCAL_PORT_N: ${{ secrets.LOCAL_PORT_N }}
       USER: ${{ secrets.USER }}
       EMAIL: ${{ secrets.EMAIL }}
-
