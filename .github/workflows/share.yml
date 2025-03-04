@@ -131,10 +131,10 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.CYM_TOKEN }}
-          tag: ${{env.strDate}}
+          tag: ${{ env.strDate }}
           file_glob: true
           overwrite: true
-          release_name: ${{env.strDate}} 自动发布
+          release_name: ${{ env.strDate }} 自动发布
           file: file/*
 
       - name: Update time info to openwrt-auto-two
@@ -142,13 +142,9 @@ jobs:
           echo "fullDateTime=$(TZ=UTC-8 date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
           git clone https://${{ secrets.USER }}:${{ secrets.CYM_TOKEN }}@github.com/findnr/openwrt-auto-one.git
           cd openwrt-auto-one
-          if [ -f "update.txt" ]; then
-            echo "${{env.fullDateTime}}" > update.txt
-          else
-            echo "${{env.fullDateTime}}" > update.txt
-          fi
+          echo "${{ env.fullDateTime }}" > update.txt
           git config --global user.email "${{ secrets.EMAIL }}"
           git config --global user.name "${{ secrets.USER }}"
           git add update.txt
-          git commit -m "Update time info: ${{env.fullDateTime}}"
+          git commit -m "Update time info: ${{ env.fullDateTime }}"
           git push
