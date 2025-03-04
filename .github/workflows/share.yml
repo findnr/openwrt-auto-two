@@ -139,15 +139,16 @@ jobs:
 
       - name: Update time info to openwrt-auto-two
         run: |
+          echo "fullDateTime=$(TZ=UTC-8 date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
           git clone https://${{ secrets.USER }}:${{ secrets.CYM_TOKEN }}@github.com/findnr/openwrt-auto-one.git
-          cd openwrt-auto-two
+          cd openwrt-auto-one
           if [ -f "update.txt" ]; then
-            echo "${{env.strDate}}" > update.txt
+            echo "${{env.fullDateTime}}" > update.txt
           else
-            echo "${{env.strDate}}" > update.txt
+            echo "${{env.fullDateTime}}" > update.txt
           fi
           git config --global user.email "${{ secrets.EMAIL }}"
           git config --global user.name "${{ secrets.USER }}"
           git add update.txt
-          git commit -m "Update time info: ${{env.strDate}}"
+          git commit -m "Update time info: ${{env.fullDateTime}}"
           git push
