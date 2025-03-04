@@ -139,7 +139,7 @@ jobs:
 
       - name: Update time info to openwrt-auto-two
         run: |
-          git clone https://${{ secrets.USER }}:${{ secrets.CYM_TOKEN }}@github.com/findnr/openwrt-auto-two.git
+          git clone https://${{ secrets.USER }}:${{ secrets.CYM_TOKEN }}@github.com/findnr/openwrt-auto-one.git
           cd openwrt-auto-two
           if [ -f "update.txt" ]; then
             echo "${{env.strDate}}" > update.txt
