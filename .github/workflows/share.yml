@@ -87,58 +87,59 @@ jobs:
           sh common/zerotier-restore.sh ubuntu-zerotier-backup.tar.gz
           rm -rf zerotier-data ubuntu-zerotier-backup.tar.gz
         
-      - name: openwrt complate init
-        run: |
-          sudo apt update -y
-          sudo apt full-upgrade -y
-          sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
-          bzip2 ccache clang cmake cpio curl device-tree-compiler flex gawk gcc-multilib g++-multilib gettext \
-          genisoimage git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev \
-          libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev \
-          libreadline-dev libssl-dev libtool llvm lrzsz msmtp ninja-build p7zip p7zip-full patch pkgconf \
-          python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion \
-          swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
-          sudo chmod 777 /mnt
-          cd / && ls -l
-      - name: git clone lede
-        run: |
-          cd /mnt
-          git clone https://github.com/openwrt/openwrt.git x86
-      - name: add feeds.config.default
-        run: |
-          cd /mnt/x86
-          ./scripts/feeds update -a
-          ./scripts/feeds install -a
-      - name: creat .config 
-        run: |
-          cd /mnt/x86
-          make defconfig
-      - name: start make 
-        run: |
-          cd /mnt/x86
-          make download -j1
-          make V=s -j1
-      - name: mv /mnt/x86/bin/targets/x86/64/*.img.gz
-        run: |
-          ls -l /mnt/x86/bin/targets/x86/64/
-          mkdir file
-          mv /mnt/x86/bin/targets/x86/64/*.img.gz file/
-          echo "###--------------------------------------------###"
-          ls -lh
-          cd file && ls -lh
-          echo "strDate=$(TZ=UTC-8 date +%Y-%m)" >> $GITHUB_ENV
-      - name: Upload release asset
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.CYM_TOKEN }}
-          tag: ${{ env.strDate }}
-          file_glob: true
-          overwrite: true
-          release_name: ${{ env.strDate }} 自动发布
-          file: file/*
+      # - name: openwrt complate init
+      #   run: |
+      #     sudo apt update -y
+      #     sudo apt full-upgrade -y
+      #     sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
+      #     bzip2 ccache clang cmake cpio curl device-tree-compiler flex gawk gcc-multilib g++-multilib gettext \
+      #     genisoimage git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev \
+      #     libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev \
+      #     libreadline-dev libssl-dev libtool llvm lrzsz msmtp ninja-build p7zip p7zip-full patch pkgconf \
+      #     python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion \
+      #     swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+      #     sudo chmod 777 /mnt
+      #     cd / && ls -l
+      # - name: git clone lede
+      #   run: |
+      #     cd /mnt
+      #     git clone https://github.com/openwrt/openwrt.git x86
+      # - name: add feeds.config.default
+      #   run: |
+      #     cd /mnt/x86
+      #     ./scripts/feeds update -a
+      #     ./scripts/feeds install -a
+      # - name: creat .config 
+      #   run: |
+      #     cd /mnt/x86
+      #     make defconfig
+      # - name: start make 
+      #   run: |
+      #     cd /mnt/x86
+      #     make download -j1
+      #     make V=s -j1
+      # - name: mv /mnt/x86/bin/targets/x86/64/*.img.gz
+      #   run: |
+      #     ls -l /mnt/x86/bin/targets/x86/64/
+      #     mkdir file
+      #     mv /mnt/x86/bin/targets/x86/64/*.img.gz file/
+      #     echo "###--------------------------------------------###"
+      #     ls -lh
+      #     cd file && ls -lh
+      #     echo "strDate=$(TZ=UTC-8 date +%Y-%m)" >> $GITHUB_ENV
+      # - name: Upload release asset
+      #   uses: svenstaro/upload-release-action@v2
+      #   with:
+      #     repo_token: ${{ secrets.CYM_TOKEN }}
+      #     tag: ${{ env.strDate }}
+      #     file_glob: true
+      #     overwrite: true
+      #     release_name: ${{ env.strDate }} 自动发布
+      #     file: file/*
       - name: Update time fullDateTime
         run: |
           echo "fullDateTime=$(TZ=UTC-8 date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+          sleep 21420
       - name: Update time info to openwrt-auto-two
         run: |
           git clone https://${{ secrets.USER }}:${{ secrets.CYM_TOKEN }}@github.com/findnr/openwrt-auto-one.git
