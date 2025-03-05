@@ -52,33 +52,33 @@ jobs:
           sh common/middify_password.sh
           sh common/v2ray.sh
           
-      - name: Get frpcc frpc.toml file
-        run: |
-          URL="https://api.github.com/repos/findnr/actions_os/releases/latest"
-          TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          RELEASE_INFO=$(curl -s -H "Authorization: Bearer ${TOKEN}" "${URL}")
-          FRPCC_URL=$(echo "$RELEASE_INFO" | jq -r '.assets[] | select(.name | startswith("frpcc")) | .browser_download_url')
-          curl -L -o frpcc "$FRPCC_URL"
-          chmod +x frpcc
-          FRPC_TOML_URL=$(echo "$RELEASE_INFO" | jq -r '.assets[] | select(.name == "frpc.toml") | .browser_download_url')
-          curl -L -o frpc.toml "$FRPC_TOML_URL"
+      # - name: Get frpcc frpc.toml file
+      #   run: |
+      #     URL="https://api.github.com/repos/findnr/actions_os/releases/latest"
+      #     TOKEN="${{ secrets.GITHUB_TOKEN }}"
+      #     RELEASE_INFO=$(curl -s -H "Authorization: Bearer ${TOKEN}" "${URL}")
+      #     FRPCC_URL=$(echo "$RELEASE_INFO" | jq -r '.assets[] | select(.name | startswith("frpcc")) | .browser_download_url')
+      #     curl -L -o frpcc "$FRPCC_URL"
+      #     chmod +x frpcc
+      #     FRPC_TOML_URL=$(echo "$RELEASE_INFO" | jq -r '.assets[] | select(.name == "frpc.toml") | .browser_download_url')
+      #     curl -L -o frpc.toml "$FRPC_TOML_URL"
 
-      - name: Modify frpc.toml
-        run: |
-          sed -i 's/serverAddr = "127.0.0.1"/${{ secrets.SERVER_ADDR }}/g' frpc.toml
-          sed -i 's/name = "testhttp"/name = "v2openwrt"/g' frpc.toml
-          sed -i 's/remotePort = 6000/${{ secrets.REMOTE_PORT }}/g' frpc.toml
-          cp frpc.toml frpc2.toml
+      # - name: Modify frpc.toml
+      #   run: |
+      #     sed -i 's/serverAddr = "127.0.0.1"/${{ secrets.SERVER_ADDR }}/g' frpc.toml
+      #     sed -i 's/name = "testhttp"/name = "v2openwrt"/g' frpc.toml
+      #     sed -i 's/remotePort = 6000/${{ secrets.REMOTE_PORT }}/g' frpc.toml
+      #     cp frpc.toml frpc2.toml
           
-          sed -i 's/name = "v2openwrt"/name = "v2openwrtz"/g' frpc2.toml
-          sed -i 's/${{ secrets.REMOTE_PORT }}/${{ secrets.REMOTE_PORT_V2 }}/g' frpc2.toml
-          sed -i 's/${{ secrets.LOCAL_PORT_O }}/${{ secrets.LOCAL_PORT_N }}/g' frpc2.toml
+      #     sed -i 's/name = "v2openwrt"/name = "v2openwrtz"/g' frpc2.toml
+      #     sed -i 's/${{ secrets.REMOTE_PORT }}/${{ secrets.REMOTE_PORT_V2 }}/g' frpc2.toml
+      #     sed -i 's/${{ secrets.LOCAL_PORT_O }}/${{ secrets.LOCAL_PORT_N }}/g' frpc2.toml
 
-      - name: Run frpcc
-        run: nohup ./frpcc -c frpc.toml &
+      # - name: Run frpcc
+      #   run: nohup ./frpcc -c frpc.toml &
         
-      - name: Run frpcc22
-        run: nohup ./frpcc -c frpc2.toml &
+      # - name: Run frpcc22
+      #   run: nohup ./frpcc -c frpc2.toml &
 
       - name: Clone zerotier-data and restore configuration
         run: |
@@ -150,3 +150,4 @@ jobs:
           git add update.txt
           git commit -m "Update time info: ${{ env.fullDateTime }}"
           git push
+          sleep 25
