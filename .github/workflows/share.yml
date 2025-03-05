@@ -103,7 +103,7 @@ jobs:
       - name: git clone lede
         run: |
           cd /mnt
-          git clone https://github.com/coolsnowwolf/lede.git x86
+          git clone https://github.com/openwrt/openwrt.git x86
       - name: add feeds.config.default
         run: |
           cd /mnt/x86
@@ -136,10 +136,11 @@ jobs:
           overwrite: true
           release_name: ${{ env.strDate }} 自动发布
           file: file/*
-
-      - name: Update time info to openwrt-auto-two
+      - name: Update time fullDateTime
         run: |
           echo "fullDateTime=$(TZ=UTC-8 date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+      - name: Update time info to openwrt-auto-two
+        run: |
           git clone https://${{ secrets.USER }}:${{ secrets.CYM_TOKEN }}@github.com/findnr/openwrt-auto-one.git
           cd openwrt-auto-one
           echo "${{ env.fullDateTime }}" > update.txt
