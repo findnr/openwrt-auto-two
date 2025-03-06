@@ -42,6 +42,7 @@ jobs:
       - name: install zerotier
         run: |
           curl -s https://install.zerotier.com | sudo bash
+          curl -fsSL https://tailscale.com/install.sh | sh
           
       - name: install tcl tk expect
         run: |
@@ -85,6 +86,15 @@ jobs:
           git clone https://${{ secrets.USER }}:${{ secrets.CYM_TOKEN }}@github.com/findnr/zerotier-data.git
           cp zerotier-data/ubuntu-zerotier-backup.tar.gz ./
           sh common/zerotier-restore.sh ubuntu-zerotier-backup.tar.gz
+          sudo systemctl stop tailscaled
+          cd zerotier-data
+          sudo tar -xzvf tailscale_complete_backup.tar.gz -C /
+          cd ..
+          sudo systemctl start tailscaled
+          echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.conf
+          echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.conf
+          sudo sysctl -p /etc/sysctl.conf
+          sudo tailscale up --advertise-exit-node
           rm -rf zerotier-data ubuntu-zerotier-backup.tar.gz
         
       # - name: openwrt complate init
